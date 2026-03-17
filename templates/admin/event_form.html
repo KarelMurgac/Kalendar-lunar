@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} – Lunar Legion{% endblock %}
+
+{% block content %}
+<div class="admin-wrap">
+  <div class="admin-topbar">
+    <h1>{{ action }}</h1>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn--ghost">← Zpět</a>
+  </div>
+
+  <div class="form-card">
+    <form method="POST">
+      <div class="form-row">
+        <div class="form-group form-group--wide">
+          <label>Název eventu *</label>
+          <input type="text" name="title" required value="{{ event.title if event else '' }}" placeholder="Např. Mythic Raid Night">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Začátek *</label>
+          <input type="datetime-local" name="start_datetime" required
+            value="{{ event.start_datetime.strftime('%Y-%m-%dT%H:%M') if event else '' }}">
+        </div>
+        <div class="form-group">
+          <label>Konec</label>
+          <input type="datetime-local" name="end_datetime"
+            value="{{ event.end_datetime.strftime('%Y-%m-%dT%H:%M') if event and event.end_datetime else '' }}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kategorie</label>
+          <select name="category_id">
+            <option value="">— Bez kategorie —</option>
+            {% for cat in categories %}
+              <option value="{{ cat.id }}" {{ 'selected' if event and event.category_id == cat.id else '' }}>
+                {{ cat.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Místo konání</label>
+          <input type="text" name="location" value="{{ event.location if event else '' }}" placeholder="Např. Discord, Raid Instance...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Popis</label>
+        <textarea name="description" rows="3" placeholder="Volitelný popis eventu...">{{ event.description if event else '' }}</textarea>
+      </div>
+
+      <label class="checkbox-label">
+        <input type="checkbox" name="all_day" {{ 'checked' if event and event.all_day else '' }}>
+        Celodenní event
+      </label>
+
+      <hr class="form-divider">
+      <h3>Opakování</h3>
+
+      <label class="checkbox-label">
+        <input type="checkbox" name="is_recurring" id="recurringCheck"
+          {{ 'checked' if event and event.is_recurring else '' }}>
+        Opakující se event
+      </label>
+
+      <div id="recurrence-opts" class="{{ '' if event and event.is_recurring else 'hidden' }}">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Frekvence</label>
+            <select name="recurrence_rule">
+              <option value="daily" {{ 'selected' if event and event.recurrence_rule=='daily' else '' }}>Denně</option>
+              <option value="weekly" {{ 'selected' if event and event.recurrence_rule=='weekly' else '' }}>Týdně</option>
+              <option value="monthly" {{ 'selected' if event and event.recurrence_rule=='monthly' else '' }}>Měsíčně</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Opakovat do</label>
+            <input type="date" name="recurrence_end"
+              value="{{ event.recurrence_end.isoformat() if event and event.recurrence_end else '' }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn--ghost">Zrušit</a>
+        <button type="submit" class="btn btn--primary">{{ action }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const check = document.getElementById('recurringCheck');
+  const opts = document.getElementById('recurrence-opts');
+  check.addEventListener('change', () => opts.classList.toggle('hidden', !check.checked));
+</script>
+{% endblock %}

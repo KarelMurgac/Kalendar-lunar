@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Admin přihlášení – Lunar Legion{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-moon">☽</div>
+    <h1>Admin přihlášení</h1>
+    <p>Lunar Legion Guild</p>
+    <form method="POST">
+      <div class="form-group">
+        <label>Uživatelské jméno</label>
+        <input type="text" name="username" required autofocus placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label>Heslo</label>
+        <input type="password" name="password" required placeholder="••••••••">
+      </div>
+      <label class="checkbox-label">
+        <input type="checkbox" name="remember"> Zapamatovat přihlášení
+      </label>
+      <button type="submit" class="btn btn--primary btn--full">Přihlásit se</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

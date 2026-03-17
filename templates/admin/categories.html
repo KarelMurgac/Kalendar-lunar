@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Kategorie – Lunar Legion{% endblock %}
+
+{% block content %}
+<div class="admin-wrap">
+  <div class="admin-topbar">
+    <h1>🏷️ Kategorie eventů</h1>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn--ghost">← Zpět</a>
+  </div>
+
+  <div class="form-card" style="max-width:480px">
+    <h3>Přidat kategorii</h3>
+    <form method="POST">
+      <div class="form-row">
+        <div class="form-group form-group--wide">
+          <label>Název</label>
+          <input type="text" name="name" required placeholder="Např. Social Event">
+        </div>
+        <div class="form-group">
+          <label>Barva</label>
+          <input type="color" name="color" value="#6C63FF">
+        </div>
+      </div>
+      <button type="submit" class="btn btn--primary">Přidat</button>
+    </form>
+  </div>
+
+  <div class="events-table-wrap" style="margin-top:2rem">
+    <table class="events-table">
+      <thead><tr><th>Barva</th><th>Název</th><th>Akce</th></tr></thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr>
+          <td><span class="event-dot" style="background:{{ cat.color }};width:20px;height:20px;display:inline-block;border-radius:50%"></span></td>
+          <td>{{ cat.name }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('admin_category_delete', cat_id=cat.id) }}" onsubmit="return confirm('Smazat kategorii?')">
+              <button type="submit" class="btn btn--sm btn--danger">🗑️ Smazat</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" class="empty-row">Žádné kategorie.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

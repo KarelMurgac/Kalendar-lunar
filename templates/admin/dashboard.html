@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – Lunar Legion{% endblock %}
+
+{% block content %}
+<div class="admin-wrap">
+  <div class="admin-topbar">
+    <h1>⚙️ Admin Dashboard</h1>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_categories') }}" class="btn btn--ghost">🏷️ Kategorie</a>
+      <a href="{{ url_for('admin_event_new') }}" class="btn btn--primary">+ Přidat event</a>
+    </div>
+  </div>
+
+  <div class="events-table-wrap">
+    <table class="events-table">
+      <thead>
+        <tr>
+          <th>Název</th>
+          <th>Kategorie</th>
+          <th>Začátek</th>
+          <th>Konec</th>
+          <th>Opakuje se</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+        <tr>
+          <td class="event-title-cell">
+            <span class="event-dot" style="background: {{ event.category.color if event.category else '#888' }}"></span>
+            {{ event.title }}
+          </td>
+          <td>{{ event.category.name if event.category else '—' }}</td>
+          <td>{{ event.start_datetime.strftime('%d.%m.%Y %H:%M') }}</td>
+          <td>{{ event.end_datetime.strftime('%d.%m.%Y %H:%M') if event.end_datetime else '—' }}</td>
+          <td>
+            {% if event.is_recurring %}
+              <span class="badge badge--recurring">{{ event.recurrence_rule }}</span>
+            {% else %}—{% endif %}
+          </td>
+          <td class="action-cell">
+            <a href="{{ url_for('admin_event_edit', event_id=event.id) }}" class="btn btn--sm btn--ghost">✏️ Upravit</a>
+            <form method="POST" action="{{ url_for('admin_event_delete', event_id=event.id) }}" onsubmit="return confirm('Opravdu smazat?')">
+              <button type="submit" class="btn btn--sm btn--danger">🗑️ Smazat</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="empty-row">Žádné eventy. <a href="{{ url_for('admin_event_new') }}">Přidat první?</a></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
