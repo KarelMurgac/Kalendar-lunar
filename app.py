@@ -34,7 +34,6 @@ def index():
     categories = EventCategory.query.all()
     return render_template("calendar.html", categories=categories)
 
-
 @app.route("/api/events")
 def api_events():
     """Return events as JSON for FullCalendar."""
@@ -275,6 +274,10 @@ def init_db():
         print("✅ Database initialized.")
 
 
+# Inicializace DB při startu
+with app.app_context():
+    db.create_all()
+    # seed admin + kategorie...
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
